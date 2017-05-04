@@ -1,0 +1,8 @@
+{
+  "apps":[
+      {
+          "name":"tingshu_client",
+          "script":"../client/tingshu/app.js"
+      }
+  ]
+}
