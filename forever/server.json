@@ -1,0 +1,18 @@
+[
+  {
+    "uid": "tingshuclient",
+    "append": true,
+    "watch": true,
+    "script": "app.js",
+    "sourceDir": ".",
+    "args":["-l","client.log"]
+  },
+  {
+    "uid": "tingshuserver",
+    "append": true,
+    "watch": true,
+    "script": "app.js",
+    "sourceDir": ".",
+    "args":["-l","server.log"]
+  }
+]
