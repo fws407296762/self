@@ -1,18 +1,23 @@
 const fs = require("fs");
 const path = require("path");
 const runPaths = ["client","server"];
-const resolvePath = "../";
+const resolvePath = __dirname.replace("bin","");
+const child_process = require('child_process');
 
-// getProjectInstallCommand();
+// child_process.exec("cd E:\project\self\client\tingshu && cnpm install",{},function(err, stdout, stderr){   //可以实现自动安装，但是这个自动安装有问题，就是不显示进度，直接把结果输出了
+//     console.log(err, stdout, stderr)
+// });
 
+var _install = child_process.spawn("cnpm",["install"])
+_install.stdout.on('data', function(data) { 
+    console.log(`stdout: ${data}`);
+});
+_install.stderr.on('data', (data) => {
+  console.log(`stderr: ${data}`);
+});
 function runAllProcess(){
 
 }
-
-function install(){
-    let install_pm2_command = "cnpm install pm2 -g";
-    
-} 
 
 function getProjectInstallCommand(){
     var command = "";
@@ -21,27 +26,21 @@ function getProjectInstallCommand(){
         if(p >= runPaths.length){
             return command;
         }
-        let readPath = resolvePath + runPaths[p] + "/";
-        
-    })(p)
+        let readPath = resolvePath + runPaths[p] + "\\";
+        let projectPaths = fs.readdirSync(readPath);
+        projectPaths.forEach(function(path,index){
+            command += " && cd " +readPath + path +" && cnpm install";
+        });
+        p++;
+        recursivePath(p);
+    })(p);
+    return command;
 }
 
-function readdirSync(path){
-    return new Promise((resolve,reject) => {
-        fs.readdir(path,(err,files) => {
-            if(err){
-                reject();
-            }
-            resolve(files);
-        })
-    })
-}
+function install(){
+    let installPm2Command = "cnpm install pm2 -g";
+    let _getProjectInstallCommand = getProjectInstallCommand();    
+    return installPm2Command + _getProjectInstallCommand;
+} 
 
-async function f1(){
-    return await readdirSync("../client/");
-}
-
-f1().then(function(res){
-    console.log(res);
-})
 
