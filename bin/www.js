@@ -8,39 +8,49 @@ const child_process = require('child_process');
 //     console.log(err, stdout, stderr)
 // });
 
-var _install = child_process.spawn("cnpm",["install"])
-_install.stdout.on('data', function(data) { 
-    console.log(`stdout: ${data}`);
+
+var _install = child_process.spawn("cd ../client/tingshu/ && cnpm install",[],{
+    shell: process.platform === 'win32'
 });
+
 _install.stderr.on('data', (data) => {
   console.log(`stderr: ${data}`);
 });
-function runAllProcess(){
 
-}
+_install.stdout.on('data', (data) => {
+  console.log(`stdout: ${data}`);
+});
 
-function getProjectInstallCommand(){
-    var command = "";
-    var p = 0;
-    (function recursivePath(p){
-        if(p >= runPaths.length){
-            return command;
-        }
-        let readPath = resolvePath + runPaths[p] + "\\";
-        let projectPaths = fs.readdirSync(readPath);
-        projectPaths.forEach(function(path,index){
-            command += " && cd " +readPath + path +" && cnpm install";
-        });
-        p++;
-        recursivePath(p);
-    })(p);
-    return command;
-}
+_install.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+});
 
-function install(){
-    let installPm2Command = "cnpm install pm2 -g";
-    let _getProjectInstallCommand = getProjectInstallCommand();    
-    return installPm2Command + _getProjectInstallCommand;
-} 
+// function runAllProcess(){
+
+// }
+
+// function getProjectInstallCommand(){
+//     var command = "";
+//     var p = 0;
+//     (function recursivePath(p){
+//         if(p >= runPaths.length){
+//             return command;
+//         }
+//         let readPath = resolvePath + runPaths[p] + "\\";
+//         let projectPaths = fs.readdirSync(readPath);
+//         projectPaths.forEach(function(path,index){
+//             command += " && cd " +readPath + path +" && cnpm install";
+//         });
+//         p++;
+//         recursivePath(p);
+//     })(p);
+//     return command;
+// }
+
+// function install(){
+//     let installPm2Command = "cnpm install pm2 -g";
+//     let _getProjectInstallCommand = getProjectInstallCommand();    
+//     return installPm2Command + _getProjectInstallCommand;
+// } 
 
 
