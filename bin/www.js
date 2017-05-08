@@ -9,14 +9,11 @@ const child_process = require('child_process');
 // });
 
 
-var _install = child_process.spawn("cd ../client/tingshu/ && cnpm install",[],{
+var _install = child_process.spawn("cd E:\\project\\self\\client\\tingshu\\ && cnpm install",[],{
     shell: process.platform === 'win32'
 });
-
-_install.stderr.on('data', (data) => {
-  console.log(`stderr: ${data}`);
-});
-
+// console.log(_install)
+// console.log('\033[31m red \033[39m');
 _install.stdout.on('data', (data) => {
   console.log(`stdout: ${data}`);
 });
@@ -24,7 +21,9 @@ _install.stdout.on('data', (data) => {
 _install.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
 });
-
+_install.stderr.on('data', (data) => {
+  console.log('\033[31m stderr:'+data+" \033[39m");
+});
 // function runAllProcess(){
 
 // }
