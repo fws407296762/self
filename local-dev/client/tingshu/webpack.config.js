@@ -1,81 +1,58 @@
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin');
 const path = require("path");
 const src = path.join(__dirname, "/src/");
 const node_modules = path.join(__dirname, "/node_modules/");
-
+const staticDomain = "http://127.0.0.1:9001/";
+const staticPluginDomain = staticDomain + "static/common/";
 const projectName = path.basename(__dirname); //获取项目名称
 
 module.exports = [
     {
-        entry: {
-            vue: path.join(node_modules, "vue/dist/vue.min.js"),
-            "vue-router": path.join(node_modules, "vue-router/dist/vue-router.min.js")
-        },
-        output: {
-            path: path.resolve(__dirname, "dist"),
-            filename: "static/" + projectName + "/js/lib/[name].js?v=[hash]",
-            libraryTarget: "amd"
-        },
-        plugins: [
-            new CopyWebpackPlugin([
-                {
-                    from: "./src/static/sea.js",
-                    to: path.resolve(__dirname, "dist/static/" + projectName + "/js/lib")
-                }
-            ]),
-            new HtmlWebpackPlugin({
-                filename: "/views/" + projectName + "/index.html",
-                template: path.join(src, "views/index.html"),
-                chunks: []
-            })
-        ],
-    },
-    {
-        entry: {
-            router: path.join(src, "static/router.js")
+        entry: function () {
+            return "./static/router/index.js";
         },
         output: {
             path: path.resolve(__dirname, "dist"),
             filename: "static/" + projectName + "/js/[name].js?v=[hash]",
-            libraryTarget: "amd"
+        },
+        module: {
+            rules: [
+                {
+                    test: /\.vue$/,
+                    use: ["vue-loader"]
+                }
+            ]
+        },
+        resolve: {
+            extensions: [".js", ".jsop", ".css", ".vue"],
+        },
+        plugins: [
+            new HtmlWebpackPlugin({
+                title: "松鼠听书",
+                filename: path.join(__dirname, "dist/views/" + projectName + "/index.html"),
+                template: path.join(__dirname, "views/index.html"),
+                chunks: []
+            }),
+            new HtmlWebpackIncludeAssetsPlugin({
+                publicPath: staticPluginDomain,
+                assets: ['lib/jquery.min.js', 'lib/sea.js'],
+                append: false,
+                hash: true
+            }),
+            new HtmlWebpackIncludeAssetsPlugin({
+                publicPath: staticPluginDomain,
+                assets: ['lib/vue.js', 'lib/vue-router.js'],
+                append: true,
+                hash: true
+            })
+        ],
+        devServer: {
+            contentBase: path.join(__dirname, "dist"),
+            compress: true,
+            port: 9000
         }
     }
 ]
-
-// module.exports = {
-//     entry: {
-//         router: path.join(src, "static/router.js"),
-//         vue: path.join(node_modules, "vue/dist/vue.min.js"),
-//         "vue-router": path.join(node_modules, "vue-router/dist/vue-router.min.js")
-//     },
-//     output: {
-//         path: path.resolve(__dirname, "dist"),
-//         filename: "static/"+projectName+"/js/[name].js?v=[hash]",
-//         libraryTarget: "amd"
-//     },
-//     devServer: {
-//         contentBase: path.join(__dirname, "dist/static/js"),
-//         compress: true,
-//         port: 9000
-//     },
-//     plugins: [
-//         new CopyWebpackPlugin([
-//             {
-//                 from:"./src/static/require.js",
-//                 to:path.resolve(__dirname, "dist/static/"+projectName+"/js")
-//             }
-//         ]),
-//         new HtmlWebpackPlugin({
-//             filename:"views/"+projectName+"/index.html",
-//             template:path.join(src, "views/index.html"),
-//             chunks:[]
-//         })
-//     ],
-//     module: {
-//         rules: [
-
-//         ]
-//     }
-// }

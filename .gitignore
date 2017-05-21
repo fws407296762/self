@@ -2,3 +2,7 @@
 /server/tingshu/node_modules
 /client/tingshu/dist
 /dev/tingshu
+/local-dev/client/tingshu/node_modules
+/local-dev/client/tingshu/dist
+/remote-dev/client/node_modules
+/.vscode
