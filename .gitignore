@@ -6,3 +6,5 @@
 /local-dev/client/tingshu/dist
 /remote-dev/client/node_modules
 /.vscode
+/local/client/tingshu/node_modules
+/local/client/tingshu/dist
